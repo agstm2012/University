@@ -15,6 +15,7 @@ public class App {
         CustomerLine customers = new CustomerLine(10);
         CustomerGenerator generator = new CustomerGenerator(customers);
         generator.start();
-
+        generator.suspendGenerator();
+        generator.resumeGenerator();
     }
 }
