@@ -7,7 +7,7 @@ import com.model.CustomerLine;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class CustomerGenerator extends Thread{
+public class CustomerGenerator extends Thread {
     CustomerLine customers;
     private static Random random = new Random();
     /*
@@ -24,7 +24,7 @@ public class CustomerGenerator extends Thread{
         try {
             while (!Thread.interrupted()) {
                 int randValue = random.nextInt(3);
-                if(randValue == 0)
+                if (randValue == 0)
                     TimeUnit.SECONDS.sleep(1);
                 else
                     TimeUnit.SECONDS.sleep(randValue);
