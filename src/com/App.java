@@ -3,6 +3,9 @@ package com;
 import com.controller.CustomerGenerator;
 import com.model.CustomerLine;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ivan
@@ -14,7 +17,8 @@ public class App {
     public static void main(String[] args) throws InterruptedException {
         CustomerLine customers = new CustomerLine(10);
         CustomerGenerator generator = new CustomerGenerator(customers);
-        generator.start();
+        Executor exec = Executors.newCachedThreadPool();
+        exec.execute(generator);
         generator.suspendGenerator();
         generator.resumeGenerator();
     }
