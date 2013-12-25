@@ -1,13 +1,5 @@
 package com.controller;
 
-import com.model.CustomerLine;
-import com.model.Teller;
-
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-
 /**
  * Created with IntelliJ IDEA.
  * User: ivanPC
@@ -16,6 +8,7 @@ import java.util.concurrent.ExecutorService;
  * To change this template use File | Settings | File Templates.
  */
 public class TellerManager extends Thread {
+    /*
     private ExecutorService exec;
     private CustomerLine customers;
     private PriorityQueue<Teller> workingTellers = new PriorityQueue<Teller>();
@@ -52,7 +45,8 @@ public class TellerManager extends Thread {
         tellersDoingOtherThings.offer(teller);
         System.out.println("Этот кассир лишний: " + teller);
     }
-
+      */
+    //все с 0 написать своими классами
     public void run() {
     }
 }

@@ -1,18 +1,17 @@
 package com.controller;
 
 
-import com.model.Customer;
 import com.model.CustomerLine;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class CustomerGenerator extends Thread {
+
     CustomerLine customers;
     private static Random random = new Random();
     /*
     <p>This boolean flag description interrupted state thread.</p>
-     */
+     */                       /*
     boolean suspendFlag;
 
     public CustomerGenerator(CustomerLine customers) {
@@ -51,5 +50,8 @@ public class CustomerGenerator extends Thread {
         suspendFlag = false;
         notifyAll();
         System.out.println("CustomerGenerator resume");
+    }     */
+    public void run() {
+        //Todo: все с 0 ебашь САМ своими классами
     }
 }
