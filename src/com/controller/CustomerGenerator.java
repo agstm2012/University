@@ -1,44 +1,68 @@
 package com.controller;
 
 
-import com.model.CustomerLine;
+import com.model.Customer;
+import com.model.CustomersList;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class CustomerGenerator extends Thread {
 
-    CustomerLine customers;
-    private static Random random = new Random();
-    /*
-    <p>This boolean flag description interrupted state thread.</p>
-     */                       /*
-    boolean suspendFlag;
+    private CustomersList customers;
+    private Random random = new Random();
+    private boolean suspendFlag;
+    private long time;
+    //Todo замерять время ввести переменную и производить статистику
 
-    public CustomerGenerator(CustomerLine customers) {
+    public CustomerGenerator(CustomersList customers) {
         this.customers = customers;
         suspendFlag = false;
     }
 
     public void run() {
+        time = -System.currentTimeMillis();
         try {
             while (!Thread.interrupted()) {
-                int randValue = random.nextInt(3);
-                if (randValue == 0)
-                    TimeUnit.SECONDS.sleep(1);
-                else
-                    TimeUnit.SECONDS.sleep(randValue);
+                TimeUnit.SECONDS.sleep(getRandom());
+                //TimeUnit.SECONDS.sleep((long) 1);
                 customers.put(new Customer(random.nextInt(10)));
-                synchronized (this) {
-                    while (suspendFlag) {
-                        wait();
-                    }
-                }
+
+                waitFlag();
                 System.out.println("Customers size: " + customers.size());
+
+
+
+
+                if(customers.size() == 10) {
+                    time += System.currentTimeMillis();
+                    System.out.println(time/1000 + " секунд");
+                    suspendGenerator();
+                }
+
+
+
+
             }
         } catch (InterruptedException e) {
             System.out.println("Customers interrupted");
         }
         System.out.println("CustomerGenerator terminating");
+    }
+
+    private int getRandom() {
+        int randValue = random.nextInt(3);
+        if (randValue == 0)
+            return 1;
+        return randValue;
+    }
+
+    private void waitFlag() throws InterruptedException {
+        synchronized (this) {
+            while (suspendFlag) {
+                wait();
+            }
+        }
     }
 
     public synchronized void suspendGenerator() {
@@ -50,8 +74,5 @@ public class CustomerGenerator extends Thread {
         suspendFlag = false;
         notifyAll();
         System.out.println("CustomerGenerator resume");
-    }     */
-    public void run() {
-        //Todo: все с 0 ебашь САМ своими классами
     }
 }

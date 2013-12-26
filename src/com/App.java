@@ -1,25 +1,23 @@
 package com;
 
 import com.controller.CustomerGenerator;
-import com.model.CustomerLine;
+import com.controller.TellerManager;
+import com.interfaces.Constants;
+import com.model.CustomersList;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ivan
- * Date: 10/17/13
- * Time: 8:17 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public class App {
     public static void main(String[] args) throws InterruptedException {
-        CustomerLine customers = new CustomerLine(10);
+        CustomersList customers = new CustomersList(Constants.CUSTOMERS_MAX_SIZE);
         CustomerGenerator generator = new CustomerGenerator(customers);
         Executor exec = Executors.newCachedThreadPool();
         exec.execute(generator);
-        generator.suspendGenerator();
-        generator.resumeGenerator();
+
+        TellerManager tellerManager = new TellerManager(exec, customers, generator);
+        exec.execute(tellerManager);
     }
 }
