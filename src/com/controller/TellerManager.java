@@ -17,21 +17,24 @@ public class TellerManager extends Thread {
     private CustomerGenerator generator;
     private boolean suspendFlag;
     private long time;
-    //Todo: нужно научиться также вводить выводить из состояния ожидания
+    //Todo просчитывать количество клиентов обслужанных каждым кассиров
+    //Todo обнулять потом все, посчитывать время до остановки
+    //Todo Просчитывать среднее время обслуживания у каждого кассира
+
+    //Todo просчитывать прочие атрибуты(возьми из лекций и тестовых проектов)
+
+    //Todo продумать SWING сделать заготовку
 
     public TellerManager(Executor exec, CustomersList customers, CustomerGenerator generator) {
         this.generator = generator;
         this.customers = customers;
         this.exec = exec;
         suspendFlag = false;
-
         initBlock();
     }
 
     private void initBlock() {
-        //начнем с одного кассира
-        Teller teller = new Teller(customers);
-        exec.execute(teller);
+        addTeller();
     }
 
 
@@ -42,18 +45,12 @@ public class TellerManager extends Thread {
     public void run() {
         try {
             while (!Thread.interrupted()) {
-                //time = -System.currentTimeMillis();
                 operationBlock();
-                //TimeUnit.SECONDS.sleep(5);
-                //time += System.currentTimeMillis();
-                //System.out.println(time/1000 + " секунд");
-
-//                generator.suspendGenerator();
-//                suspendTellerManager();
                 waitFlag();
-
                 if(customers.size() == 10) {
-                    //Todo: надо бы еще научиться останавливать executor как то
+                    generator.suspendGenerator();
+                    for(Teller teller : workingTellers)
+                        teller.suspendTeller();
                     suspendTellerManager();
                 }
             }
@@ -65,7 +62,7 @@ public class TellerManager extends Thread {
     /**
      * <p>Добавить нового кассира, если есть свободный возьмем, если нет то купим.</p>
      */
-    private void addOneTeller() {
+    private void addTeller() {
         System.out.println("Обработка данных");
         if (tellersDoingOtherThings.size() > 0) {
             Teller teller = tellersDoingOtherThings.remove();
@@ -82,7 +79,7 @@ public class TellerManager extends Thread {
     /**
      * <p>удалить из рабочих добавить в ожидающих</p>
      */
-    private void reassignOneTeller() {
+    private void reassignTeller() {
         Teller teller = workingTellers.poll();
         tellersDoingOtherThings.offer(teller);
         System.out.println("Этот кассир лишний: " + teller);

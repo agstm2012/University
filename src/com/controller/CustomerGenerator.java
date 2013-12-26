@@ -13,7 +13,6 @@ public class CustomerGenerator extends Thread {
     private Random random = new Random();
     private boolean suspendFlag;
     private long time;
-    //Todo замерять время ввести переменную и производить статистику
 
     public CustomerGenerator(CustomersList customers) {
         this.customers = customers;
@@ -21,6 +20,7 @@ public class CustomerGenerator extends Thread {
     }
 
     public void run() {
+        //Todo добавить генерацию имен кассиров, фамилия имя и отчество
         time = -System.currentTimeMillis();
         try {
             while (!Thread.interrupted()) {
@@ -31,18 +31,16 @@ public class CustomerGenerator extends Thread {
                 waitFlag();
                 System.out.println("Customers size: " + customers.size());
 
-
-
-
-                if(customers.size() == 10) {
-                    time += System.currentTimeMillis();
-                    System.out.println(time/1000 + " секунд");
-                    suspendGenerator();
-                }
-
-
-
-
+                //Todo написать это все в teller manager
+//                if(customers.size() == 10) {
+//                    time += System.currentTimeMillis();
+//                    System.out.println(time/1000 + " секунд");
+//                    System.out.println(customers.size());
+//                    suspendGenerator();
+//                    for(Customer customer : customers) {
+//                        System.out.println(customer);
+//                    }
+//                }
             }
         } catch (InterruptedException e) {
             System.out.println("Customers interrupted");
