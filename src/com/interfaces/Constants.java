@@ -3,7 +3,10 @@ package com.interfaces;
 public interface Constants {
     public static final int CUSTOMERS_MAX_SIZE = 10;
 
-    /*
+}
+
+
+/*
     //: concurrency/BankTellerSimulation.java
 // Using queues and multithreading.
 // {Args: 5}
@@ -232,6 +235,3 @@ Teller 0 terminating
 CustomerGenerator interrupted
 CustomerGenerator terminating
 *///:~
-
-
-}

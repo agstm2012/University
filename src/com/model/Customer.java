@@ -1,11 +1,14 @@
 package com.model;
 
+import com.controller.NameGenerator;
+
 public class Customer {
     private int serviceTime;
     private String name;
 
     public Customer(int serviceTime) {
         this.serviceTime = serviceTime;
+        this.name = NameGenerator.generateName();
     }
 
     public int getServiceTime() {
@@ -13,6 +16,6 @@ public class Customer {
     }
 
     public String toString() {
-        return "[" + serviceTime + "]";
+        return "[" + name + "]";
     }
 }

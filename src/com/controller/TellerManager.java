@@ -1,5 +1,7 @@
 package com.controller;
 
+import com.interfaces.Constants;
+import com.model.Customer;
 import com.model.CustomersList;
 import com.model.Teller;
 
@@ -16,7 +18,6 @@ public class TellerManager extends Thread {
     private Queue<Teller> tellersDoingOtherThings = new LinkedList<Teller>();
     private CustomerGenerator generator;
     private boolean suspendFlag;
-    private long time;
     //Todo просчитывать количество клиентов обслужанных каждым кассиров
     //Todo обнулять потом все, посчитывать время до остановки
     //Todo Просчитывать среднее время обслуживания у каждого кассира
@@ -47,11 +48,12 @@ public class TellerManager extends Thread {
             while (!Thread.interrupted()) {
                 operationBlock();
                 waitFlag();
-                if(customers.size() == 10) {
-                    generator.suspendGenerator();
-                    for(Teller teller : workingTellers)
-                        teller.suspendTeller();
-                    suspendTellerManager();
+
+                if (customers.size() == Constants.CUSTOMERS_MAX_SIZE) {
+                    suspendBlock();
+                    printBlock();
+
+                    //exitBlock();
                 }
             }
         } catch (InterruptedException e) {
@@ -59,6 +61,35 @@ public class TellerManager extends Thread {
         }
         System.out.println("TellerManager terminating");
     }
+
+    private void suspendBlock() {
+        generator.suspendGenerator();
+        for (Teller teller : workingTellers)
+            teller.suspendTeller();
+        suspendTellerManager();
+    }
+
+    private void resumeBlock() {
+        generator.resumeGenerator();
+        for(Teller teller : workingTellers)
+            teller.resumeTeller();
+        resumeTellerManager();
+    }
+
+    private void printBlock() {
+        for (Customer customer : customers) {
+            System.out.println(customer);
+        }
+
+        for (Teller teller : workingTellers) {
+            System.out.println(teller);
+        }
+    }
+
+    private void exitBlock() {
+        System.exit(0);
+    }
+
     /**
      * <p>Добавить нового кассира, если есть свободный возьмем, если нет то купим.</p>
      */
@@ -73,7 +104,7 @@ public class TellerManager extends Thread {
         Teller teller = new Teller(customers);
         exec.execute(teller);
         workingTellers.add(teller);
-        System.out.println("Нанимаем кассира: " + teller);
+        System.out.println("Нанимаем кассира: " + teller.getTellerName());
     }
 
     /**

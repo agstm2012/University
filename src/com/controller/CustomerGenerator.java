@@ -25,22 +25,9 @@ public class CustomerGenerator extends Thread {
         try {
             while (!Thread.interrupted()) {
                 TimeUnit.SECONDS.sleep(getRandom());
-                //TimeUnit.SECONDS.sleep((long) 1);
                 customers.put(new Customer(random.nextInt(10)));
-
                 waitFlag();
                 System.out.println("Customers size: " + customers.size());
-
-                //Todo написать это все в teller manager
-//                if(customers.size() == 10) {
-//                    time += System.currentTimeMillis();
-//                    System.out.println(time/1000 + " секунд");
-//                    System.out.println(customers.size());
-//                    suspendGenerator();
-//                    for(Customer customer : customers) {
-//                        System.out.println(customer);
-//                    }
-//                }
             }
         } catch (InterruptedException e) {
             System.out.println("Customers interrupted");

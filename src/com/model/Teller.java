@@ -1,5 +1,7 @@
 package com.model;
 
+import com.controller.NameGenerator;
+
 import java.util.concurrent.TimeUnit;
 
 public class Teller extends Thread {
@@ -7,9 +9,15 @@ public class Teller extends Thread {
     private int id = counter++;
     private CustomersList customers;
     private boolean suspendFlag;
+    private String name;
+    private int servedCustomerCount;
+    private long servedTime;
 
     public Teller(CustomersList customers) {
         this.customers = customers;
+        this.name = NameGenerator.generateName();
+        this.servedCustomerCount = 0;
+        this.servedTime = 0;
     }
 
     public void run() {
@@ -18,6 +26,8 @@ public class Teller extends Thread {
                 Customer customer = customers.take();
                 System.out.println("Обслуживаеться " + customer + " время " + customer.getServiceTime());
                 TimeUnit.SECONDS.sleep(customer.getServiceTime());
+                servedCustomerCount++;
+                servedTime += customer.getServiceTime();
                 waitFlag();
             }
         } catch (InterruptedException e) {
@@ -40,8 +50,31 @@ public class Teller extends Thread {
     }
 
     public synchronized void resumeTeller() {
+        servedCustomerCount = 0;
+        servedTime = 0;
         suspendFlag = false;
         notifyAll();
         System.out.println("CustomerGenerator resume");
+    }
+
+    public String toString() {
+        return "Кассир: " + name + "\nВремя работы: " + servedTime + "\nКоличество обслужанных клиентов:" +
+                servedCustomerCount + "\nСреднее время обслуживания клиента: " + ((double)servedTime / servedCustomerCount);
+    }
+
+    public String getTellerName() {
+        return name;
+    }
+
+    public int getServedCustomerCount() {
+        return servedCustomerCount;
+    }
+
+    public long getServedTime() {
+        return servedTime;
+    }
+
+    public long getMiddleServedTime() {
+        return servedTime / servedCustomerCount;
     }
 }

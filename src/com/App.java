@@ -1,6 +1,7 @@
 package com;
 
 import com.controller.CustomerGenerator;
+import com.controller.NameGenerator;
 import com.controller.TellerManager;
 import com.interfaces.Constants;
 import com.model.CustomersList;
@@ -12,6 +13,9 @@ import java.util.concurrent.TimeUnit;
 
 public class App {
     public static void main(String[] args) throws InterruptedException {
+        //init name generator
+        NameGenerator nameGenerator = new NameGenerator();
+
         CustomersList customers = new CustomersList(Constants.CUSTOMERS_MAX_SIZE);
         CustomerGenerator generator = new CustomerGenerator(customers);
         Executor exec = Executors.newCachedThreadPool();
