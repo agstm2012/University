@@ -49,12 +49,18 @@ public class TellerManager extends Thread {
                 operationBlock();
                 waitFlag();
 
-                if (customers.size() == Constants.CUSTOMERS_MAX_SIZE) {
-                    suspendBlock();
-                    printBlock();
-
-                    //exitBlock();
-                }
+//                if(customers.size() == 5) {
+//                    suspendBlock();
+//                    TimeUnit.SECONDS.sleep(5);
+//                    resumeBlock();
+//                }
+//
+//                if (customers.size() == Constants.CUSTOMERS_MAX_SIZE) {
+//                    suspendBlock();
+//                    printBlock();
+//
+//                    //exitBlock();
+//                }
             }
         } catch (InterruptedException e) {
             System.out.println("Customers interrupted");
@@ -62,18 +68,18 @@ public class TellerManager extends Thread {
         System.out.println("TellerManager terminating");
     }
 
-    private void suspendBlock() {
+    public void suspendBlock() {
+        suspendTellerManager();
         generator.suspendGenerator();
         for (Teller teller : workingTellers)
             teller.suspendTeller();
-        suspendTellerManager();
     }
 
-    private void resumeBlock() {
+    public void resumeBlock() {
+        resumeTellerManager();
         generator.resumeGenerator();
         for(Teller teller : workingTellers)
             teller.resumeTeller();
-        resumeTellerManager();
     }
 
     private void printBlock() {

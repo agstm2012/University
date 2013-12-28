@@ -1,7 +1,7 @@
 package com.interfaces;
 
 public interface Constants {
-    public static final int CUSTOMERS_MAX_SIZE = 10;
+    public static final int CUSTOMERS_MAX_SIZE = 100;
 
 }
 

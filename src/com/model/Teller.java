@@ -46,15 +46,13 @@ public class Teller extends Thread {
 
     public synchronized void suspendTeller() {
         suspendFlag = true;
-        System.out.println("CustomerGenerator suspend");
+        System.out.println("Teller suspend");
     }
 
     public synchronized void resumeTeller() {
-        servedCustomerCount = 0;
-        servedTime = 0;
         suspendFlag = false;
         notifyAll();
-        System.out.println("CustomerGenerator resume");
+        System.out.println("Teller resume");
     }
 
     public String toString() {

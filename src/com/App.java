@@ -5,7 +5,9 @@ import com.controller.NameGenerator;
 import com.controller.TellerManager;
 import com.interfaces.Constants;
 import com.model.CustomersList;
+import com.view.MainWindow;
 
+import javax.swing.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +23,15 @@ public class App {
         Executor exec = Executors.newCachedThreadPool();
         exec.execute(generator);
 
-        TellerManager tellerManager = new TellerManager(exec, customers, generator);
+        final TellerManager tellerManager = new TellerManager(exec, customers, generator);
         exec.execute(tellerManager);
+
+        SwingUtilities.invokeLater(new Runnable() {   //this is use for concurrency-safe mode
+            @Override
+            public void run() {
+                MainWindow window = new MainWindow(tellerManager);
+                window.setVisible(true);
+            }
+        });
     }
 }

@@ -1,6 +1,7 @@
 package com.controller;
 
 
+import com.interfaces.Constants;
 import com.model.Customer;
 import com.model.CustomersList;
 
@@ -23,7 +24,7 @@ public class CustomerGenerator extends Thread {
         //Todo добавить генерацию имен кассиров, фамилия имя и отчество
         time = -System.currentTimeMillis();
         try {
-            while (!Thread.interrupted()) {
+            while (!Thread.interrupted() && !suspendFlag) {
                 TimeUnit.SECONDS.sleep(getRandom());
                 customers.put(new Customer(random.nextInt(10)));
                 waitFlag();
