@@ -61,4 +61,32 @@ public class CustomerGenerator extends Thread {
         notifyAll();
         System.out.println("CustomerGenerator resume");
     }
+
+    public CustomersList getCustomers() {
+        return customers;
+    }
+
+    public boolean isSuspendFlag() {
+        return suspendFlag;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setCustomers(CustomersList customers) {
+        this.customers = customers;
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public void setSuspendFlag(boolean suspendFlag) {
+        this.suspendFlag = suspendFlag;
+    }
 }

@@ -21,9 +21,7 @@ public class TellerManager extends Thread {
     //Todo просчитывать количество клиентов обслужанных каждым кассиров
     //Todo обнулять потом все, посчитывать время до остановки
     //Todo Просчитывать среднее время обслуживания у каждого кассира
-
     //Todo просчитывать прочие атрибуты(возьми из лекций и тестовых проектов)
-
     //Todo продумать SWING сделать заготовку
 
     public TellerManager(Executor exec, CustomersList customers, CustomerGenerator generator) {
@@ -49,18 +47,11 @@ public class TellerManager extends Thread {
                 operationBlock();
                 waitFlag();
 
-//                if(customers.size() == 5) {
-//                    suspendBlock();
-//                    TimeUnit.SECONDS.sleep(5);
-//                    resumeBlock();
-//                }
-//
-//                if (customers.size() == Constants.CUSTOMERS_MAX_SIZE) {
-//                    suspendBlock();
-//                    printBlock();
-//
-//                    //exitBlock();
-//                }
+                if (customers.size() == Constants.CUSTOMERS_MAX_SIZE) {
+                    suspendBlock();
+                    printBlock();
+                    exitBlock();
+                }
             }
         } catch (InterruptedException e) {
             System.out.println("Customers interrupted");
@@ -82,7 +73,26 @@ public class TellerManager extends Thread {
             teller.resumeTeller();
     }
 
-    private void printBlock() {
+    public void reloadBlock() {
+        suspendBlock();
+        try {
+            System.out.println("Идет перезагрузка. Подождите 10 секунд");
+            TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        customers = new CustomersList(Constants.CUSTOMERS_MAX_SIZE);
+        generator.setCustomers(customers);
+        generator.setTime(0);
+        for (Teller teller : workingTellers)
+            teller.interrupt(); //Todo здесь надо завершить поток теллера.
+        workingTellers = new PriorityQueue<Teller>();
+        tellersDoingOtherThings = new LinkedList<Teller>();
+        addTeller();
+        resumeBlock();
+    }
+
+    public void printBlock() {
         for (Customer customer : customers) {
             System.out.println(customer);
         }

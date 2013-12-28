@@ -53,6 +53,11 @@ public class MainWindow extends JFrame {
         panel.setLayout(new BorderLayout());
         setLeftPartPanel(panel);
         setBottomPartPanel(panel);
+        setMainPartPanel(panel);
+    }
+
+    private void setMainPartPanel(JPanel panel) {
+
     }
 
     private void setBottomPartPanel(JPanel panel) {
@@ -84,12 +89,18 @@ public class MainWindow extends JFrame {
         resumeButton.addActionListener(new ResumeAction());
         resumeButton.setToolTipText("Resume thread");
 
+        JButton reloadButton = new JButton("Reload");
+        reloadButton.setBounds(10, 10, 80, 30);
+        reloadButton.addActionListener(new ReloadAction());
+        reloadButton.setToolTipText("Reload thread");
+
         JPanel leftPanel = new JPanel();
         leftPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         leftPanel.setLayout(new GridLayout(7, 1, 5, 5));
 
         leftPanel.add(resumeButton);
         leftPanel.add(suspendButton);
+        leftPanel.add(reloadButton);
         leftPanel.add(exitButton);
 
         panel.add(leftPanel, BorderLayout.WEST);
@@ -107,6 +118,7 @@ public class MainWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             tellerManager.suspendBlock();
+            tellerManager.printBlock();
         }
     }
 
@@ -114,6 +126,14 @@ public class MainWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             tellerManager.resumeBlock();
+        }
+    }
+
+    class ReloadAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            tellerManager.reloadBlock();
+            tellerManager.printBlock();
         }
     }
 }
