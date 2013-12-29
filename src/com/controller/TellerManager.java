@@ -105,6 +105,7 @@ public class TellerManager extends Thread {
         System.out.println("Интенсивность потока h " + calculateIntensity() + " чел./сек.");
         System.out.println("Интенсивность нагрузки p " + calculateIntensityLoad() + " на каждого кассира");
         System.out.println("Вероятность того что канал не занят p0 " + calculateProbabilityOfFailure());
+
     }
 
     private int fact(int num) {
