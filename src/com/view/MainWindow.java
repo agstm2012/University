@@ -132,8 +132,8 @@ public class MainWindow extends JFrame {
     class ReloadAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            tellerManager.reloadBlock();
             tellerManager.printBlock();
+            tellerManager.reloadBlock();
         }
     }
 }

@@ -9,11 +9,11 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class CustomerGenerator extends Thread {
-
     private CustomersList customers;
     private Random random = new Random();
     private boolean suspendFlag;
     private long time;
+    private int customersCount;
 
     public CustomerGenerator(CustomersList customers) {
         this.customers = customers;
@@ -21,12 +21,12 @@ public class CustomerGenerator extends Thread {
     }
 
     public void run() {
-        //Todo добавить генерацию имен кассиров, фамилия имя и отчество
         time = -System.currentTimeMillis();
         try {
             while (!Thread.interrupted() && !suspendFlag) {
                 TimeUnit.SECONDS.sleep(getRandom());
                 customers.put(new Customer(random.nextInt(10)));
+                customersCount++;
                 waitFlag();
                 System.out.println("Customers size: " + customers.size());
             }
@@ -53,6 +53,7 @@ public class CustomerGenerator extends Thread {
 
     public synchronized void suspendGenerator() {
         suspendFlag = true;
+        time += System.currentTimeMillis();
         System.out.println("CustomerGenerator suspend");
     }
 
@@ -88,5 +89,13 @@ public class CustomerGenerator extends Thread {
 
     public void setSuspendFlag(boolean suspendFlag) {
         this.suspendFlag = suspendFlag;
+    }
+
+    public int getCustomersCount() {
+        return customersCount;
+    }
+
+    public void setCustomersCount(int customersCount) {
+        this.customersCount = customersCount;
     }
 }

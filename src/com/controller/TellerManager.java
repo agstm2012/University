@@ -84,6 +84,7 @@ public class TellerManager extends Thread {
         customers = new CustomersList(Constants.CUSTOMERS_MAX_SIZE);
         generator.setCustomers(customers);
         generator.setTime(0);
+        generator.setCustomersCount(0);
         for (Teller teller : workingTellers)
             teller.interrupt(); //Todo здесь надо завершить поток теллера.
         workingTellers = new PriorityQueue<Teller>();
@@ -100,6 +101,44 @@ public class TellerManager extends Thread {
         for (Teller teller : workingTellers) {
             System.out.println(teller);
         }
+
+        System.out.println("Интенсивность потока h " + calculateIntensity() + " чел./сек.");
+        System.out.println("Интенсивность нагрузки p " + calculateIntensityLoad() + " на каждого кассира");
+        System.out.println("Вероятность того что канал не занят p0 " + calculateProbabilityOfFailure());
+    }
+
+    private int fact(int num) {
+        return (num == 0) ? 1 : num * fact(num - 1);
+    }
+
+    private static float round(float number, int scale) {
+        int pow = 10;
+        for (int i = 1; i < scale; i++)
+            pow *= 10;
+        float tmp = number * pow;
+        return (float) (int) ((tmp - (int) tmp) >= 0.5f ? tmp + 1 : tmp) / pow;
+    }
+
+    private float calculateProbabilityOfFailure() {
+        float sum = 0;
+        float probabilityOfFailure;
+        for(int i = 0; i <= Constants.TELLERS_MAX_SIZE; i++) {
+            sum = (float) (sum + (Math.pow(calculateIntensity() * 60, i)/ fact(i)));
+        }
+        probabilityOfFailure = (float) 1 / sum;
+        if(probabilityOfFailure > 0 && probabilityOfFailure < 0.1f)
+            return 0.1f;
+        return round(probabilityOfFailure, 2);
+    }
+
+    //Todo может создать класс calculator чтобы не было вычислений в самом потоке
+    private double calculateIntensityLoad() {   //u - количество кассиров
+        return (double) (calculateIntensity() / Constants.TELLERS_MAX_SIZE);
+    }
+
+    private double calculateIntensity() {
+        //return (double) ((generator.getTime() / 1000) / generator.getCustomersCount()) * 3600;
+        return (double) (generator.getTime() / 1000) / generator.getCustomersCount();
     }
 
     private void exitBlock() {
