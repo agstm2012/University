@@ -3,6 +3,8 @@ package com.view;
 import com.controller.TellerManager;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +12,10 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 public class MainWindow extends JFrame {
-    public JTextArea outputText;
+    public static JTextArea outputText;
+    JButton suspendButton;
+    JButton resumeButton;
+
     public TellerManager tellerManager;
 
     public MainWindow(TellerManager tellerManager) {
@@ -18,7 +23,7 @@ public class MainWindow extends JFrame {
         initUI();
 
         setTitle("SMO Project");
-        setSize(640, 480);
+        setSize(840, 480);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -33,6 +38,7 @@ public class MainWindow extends JFrame {
         setJMenuBar(menu);
 
         setPanelContent(panel);
+        resumeButton.setEnabled(false);
     }
 
     private void setMenuContent(JMenuBar menu) {
@@ -57,6 +63,22 @@ public class MainWindow extends JFrame {
     }
 
     private void setMainPartPanel(JPanel panel) {
+        TableModel model = new DefaultTableModel();
+        //Todo сделать все на default tableModel
+
+
+
+
+
+
+        JTable table = new JTable(model);
+        JScrollPane scrollingArea = new JScrollPane(table);
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout());
+        centerPanel.add(scrollingArea, BorderLayout.CENTER);
+
+        panel.add(centerPanel, BorderLayout.CENTER);
 
     }
 
@@ -79,12 +101,12 @@ public class MainWindow extends JFrame {
         exitButton.addActionListener(new ExitAction());
         exitButton.setToolTipText("Exit application");
 
-        JButton suspendButton = new JButton("Pause");
+        suspendButton = new JButton("Pause");
         suspendButton.setBounds(10, 10, 80, 30);
         suspendButton.addActionListener(new SuspendAction());
         suspendButton.setToolTipText("Pause thread");
 
-        JButton resumeButton = new JButton("Resume");
+        resumeButton = new JButton("Resume");
         resumeButton.setBounds(10, 10, 80, 30);
         resumeButton.addActionListener(new ResumeAction());
         resumeButton.setToolTipText("Resume thread");
@@ -106,6 +128,10 @@ public class MainWindow extends JFrame {
         panel.add(leftPanel, BorderLayout.WEST);
     }
 
+    public synchronized static void printOutputText(String text) {
+        outputText.append(text + "\n");
+        System.out.println(text);
+    }
 
     class ExitAction implements ActionListener {
         @Override
@@ -119,6 +145,8 @@ public class MainWindow extends JFrame {
         public void actionPerformed(ActionEvent e) {
             tellerManager.suspendBlock();
             tellerManager.printBlock();
+            suspendButton.setEnabled(false);
+            resumeButton.setEnabled(true);
         }
     }
 
@@ -126,6 +154,8 @@ public class MainWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             tellerManager.resumeBlock();
+            resumeButton.setEnabled(false);
+            suspendButton.setEnabled(true);
         }
     }
 
@@ -134,6 +164,8 @@ public class MainWindow extends JFrame {
         public void actionPerformed(ActionEvent e) {
             tellerManager.printBlock();
             tellerManager.reloadBlock();
+            resumeButton.setEnabled(false);
+            suspendButton.setEnabled(true);
         }
     }
 }

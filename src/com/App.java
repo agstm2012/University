@@ -1,5 +1,6 @@
 package com;
 
+import com.controller.Calculator;
 import com.controller.CustomerGenerator;
 import com.controller.NameGenerator;
 import com.controller.TellerManager;
@@ -20,6 +21,9 @@ public class App {
 
         CustomersList customers = new CustomersList(Constants.CUSTOMERS_MAX_SIZE);
         CustomerGenerator generator = new CustomerGenerator(customers);
+        //init calculator
+        Calculator calculator = new Calculator(generator);
+
         Executor exec = Executors.newCachedThreadPool();
         exec.execute(generator);
 

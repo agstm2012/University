@@ -4,6 +4,7 @@ import com.interfaces.Constants;
 import com.model.Customer;
 import com.model.CustomersList;
 import com.model.Teller;
+import com.view.MainWindow;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -19,10 +20,9 @@ public class TellerManager extends Thread {
     private CustomerGenerator generator;
     private boolean suspendFlag;
     //Todo просчитывать количество клиентов обслужанных каждым кассиров
-    //Todo обнулять потом все, посчитывать время до остановки
     //Todo Просчитывать среднее время обслуживания у каждого кассира
     //Todo просчитывать прочие атрибуты(возьми из лекций и тестовых проектов)
-    //Todo продумать SWING сделать заготовку
+    //Todo доделать SWING
 
     public TellerManager(Executor exec, CustomersList customers, CustomerGenerator generator) {
         this.generator = generator;
@@ -75,12 +75,13 @@ public class TellerManager extends Thread {
 
     public void reloadBlock() {
         suspendBlock();
-        try {
-            System.out.println("Идет перезагрузка. Подождите 10 секунд");
-            TimeUnit.SECONDS.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //Todo заменить это на что то другое, а то подвисает GUI
+//        try {
+//            System.out.println("Идет перезагрузка. Подождите 10 секунд");
+//            TimeUnit.SECONDS.sleep(10);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         customers = new CustomersList(Constants.CUSTOMERS_MAX_SIZE);
         generator.setCustomers(customers);
         generator.setTime(0);
@@ -95,51 +96,30 @@ public class TellerManager extends Thread {
 
     public void printBlock() {
         for (Customer customer : customers) {
-            System.out.println(customer);
+            MainWindow.printOutputText(customer.toString());
         }
-
         for (Teller teller : workingTellers) {
-            System.out.println(teller);
+            MainWindow.printOutputText(teller.toString());
         }
-
-        System.out.println("Интенсивность потока h " + calculateIntensity() + " чел./сек.");
-        System.out.println("Интенсивность нагрузки p " + calculateIntensityLoad() + " на каждого кассира");
-        System.out.println("Вероятность того что канал не занят p0 " + calculateProbabilityOfFailure());
-
+        printCalculation();
     }
 
-    private int fact(int num) {
-        return (num == 0) ? 1 : num * fact(num - 1);
-    }
-
-    private static float round(float number, int scale) {
-        int pow = 10;
-        for (int i = 1; i < scale; i++)
-            pow *= 10;
-        float tmp = number * pow;
-        return (float) (int) ((tmp - (int) tmp) >= 0.5f ? tmp + 1 : tmp) / pow;
-    }
-
-    private float calculateProbabilityOfFailure() {
-        float sum = 0;
-        float probabilityOfFailure;
-        for(int i = 0; i <= Constants.TELLERS_MAX_SIZE; i++) {
-            sum = (float) (sum + (Math.pow(calculateIntensity() * 60, i)/ fact(i)));
+    private void printCalculation() {
+        MainWindow.printOutputText("Интенсивность потока h " + Calculator.calculateIntensity() + " чел./сек.");
+        MainWindow.printOutputText("Интенсивность нагрузки p " + Calculator.calculateIntensityLoad() + " на каждого кассира");
+        MainWindow.printOutputText("Вероятность того что канал не занят p0 " + Calculator.calculateProbabilityOfFailure());
+        for(int i = 1; i <= Constants.TELLERS_MAX_SIZE; i++) {
+            MainWindow.printOutputText("Вероятность того, что обслуживанием занят p" + i + " канал: " +
+                    Calculator.calculateProbabilityByChanel(i));
         }
-        probabilityOfFailure = (float) 1 / sum;
-        if(probabilityOfFailure > 0 && probabilityOfFailure < 0.1f)
-            return 0.1f;
-        return round(probabilityOfFailure, 2);
-    }
-
-    //Todo может создать класс calculator чтобы не было вычислений в самом потоке
-    private double calculateIntensityLoad() {   //u - количество кассиров
-        return (double) (calculateIntensity() / Constants.TELLERS_MAX_SIZE);
-    }
-
-    private double calculateIntensity() {
-        //return (double) ((generator.getTime() / 1000) / generator.getCustomersCount()) * 3600;
-        return (double) (generator.getTime() / 1000) / generator.getCustomersCount();
+        MainWindow.printOutputText("Доля заявок, получивших отказ p_otk " + Calculator.calculateCustomerProbabilityOfFailure());
+        MainWindow.printOutputText("Относительная пропускная способность p_obs " + Calculator.calculateCustomerServedOfFailure());
+        MainWindow.printOutputText("Среднее число каналов, занятых обслуживанием n_z " + Calculator.middleCountChanelServed());
+        MainWindow.printOutputText("Среднее число простаивающих каналов n_sr " + Calculator.middleCountChanelWait());
+        MainWindow.printOutputText("Коэффициент занятости каналов обслуживанием K_z " + Calculator.kidServedChannels());
+        MainWindow.printOutputText("Абсолютная пропускная способность A " + Calculator.absolutionProbability());
+        MainWindow.printOutputText("Среднее время простоя СМО t_pr " + Calculator.middleTimeWaitSMO());
+        MainWindow.printOutputText("Среднее число обслуживаемых заявок l_obs " + Calculator.middleCountServedCustomer());
     }
 
     private void exitBlock() {
@@ -191,3 +171,46 @@ public class TellerManager extends Thread {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+/*
+    private int fact(int num) {
+        return (num == 0) ? 1 : num * fact(num - 1);
+    }
+
+    private static float round(float number, int scale) {
+        int pow = 10;
+        for (int i = 1; i < scale; i++)
+            pow *= 10;
+        float tmp = number * pow;
+        return (float) (int) ((tmp - (int) tmp) >= 0.5f ? tmp + 1 : tmp) / pow;
+    }
+
+    private float calculateProbabilityOfFailure() {
+        float sum = 0;
+        float probabilityOfFailure;
+        for(int i = 0; i <= Constants.TELLERS_MAX_SIZE; i++) {
+            sum = (float) (sum + (Math.pow(calculateIntensity() * 60, i)/ fact(i)));
+        }
+        probabilityOfFailure = (float) 1 / sum;
+        if(probabilityOfFailure > 0 && probabilityOfFailure < 0.1f)
+            return 0.1f;
+        return round(probabilityOfFailure, 2);
+    }
+
+    private double calculateIntensityLoad() {   //u - количество кассиров
+        return (double) (calculateIntensity() / Constants.TELLERS_MAX_SIZE);
+    }
+
+    private double calculateIntensity() {
+        //return (double) ((generator.getTime() / 1000) / generator.getCustomersCount()) * 3600;
+        return (double) (generator.getTime() / 1000) / generator.getCustomersCount();
+    }
+    */
