@@ -4,7 +4,7 @@ import com.controller.NameGenerator;
 
 import java.util.concurrent.TimeUnit;
 
-public class Teller extends Thread {
+public class Teller extends Thread implements Comparable {
     private static int counter = 0;
     private int id = counter++;
     private CustomersList customers;
@@ -57,7 +57,7 @@ public class Teller extends Thread {
 
     public String toString() {
         return "Кассир: " + name + "\nВремя работы: " + servedTime + "\nКоличество обслужанных клиентов:" +
-                servedCustomerCount + "\nСреднее время обслуживания клиента: " + ((double)servedTime / servedCustomerCount);
+                servedCustomerCount + "\nСреднее время обслуживания клиента: " + ((double) servedTime / servedCustomerCount);
     }
 
     public String getTellerName() {
@@ -74,5 +74,14 @@ public class Teller extends Thread {
 
     public long getMiddleServedTime() {
         return servedTime / servedCustomerCount;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Teller tmp = (Teller) o;
+        if (this.id != tmp.id) {
+            return -1;
+        } else
+            return 1;
     }
 }

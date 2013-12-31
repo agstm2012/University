@@ -13,6 +13,7 @@ import java.io.File;
 
 public class MainWindow extends JFrame {
     public static JTextArea outputText;
+    public static DefaultTableModel model;
     JButton suspendButton;
     JButton resumeButton;
 
@@ -63,13 +64,9 @@ public class MainWindow extends JFrame {
     }
 
     private void setMainPartPanel(JPanel panel) {
-        TableModel model = new DefaultTableModel();
-        //Todo сделать все на default tableModel
+        String[] columnNames = {"h", "p", "p0", "p", "p_otk", "p_obs", "n_z", "n_sr", "K_z", "A", "t_pr", "l_obs"};
 
-
-
-
-
+        model = new DefaultTableModel(null, columnNames);
 
         JTable table = new JTable(model);
         JScrollPane scrollingArea = new JScrollPane(table);
@@ -79,7 +76,6 @@ public class MainWindow extends JFrame {
         centerPanel.add(scrollingArea, BorderLayout.CENTER);
 
         panel.add(centerPanel, BorderLayout.CENTER);
-
     }
 
     private void setBottomPartPanel(JPanel panel) {
@@ -131,6 +127,11 @@ public class MainWindow extends JFrame {
     public synchronized static void printOutputText(String text) {
         outputText.append(text + "\n");
         System.out.println(text);
+    }
+
+    public synchronized static void addTableRow(String[] data) {
+        model.addRow(data);
+        model.fireTableDataChanged();
     }
 
     class ExitAction implements ActionListener {

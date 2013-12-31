@@ -25,7 +25,7 @@ public class CustomerGenerator extends Thread {
         try {
             while (!Thread.interrupted() && !suspendFlag) {
                 TimeUnit.SECONDS.sleep(getRandom());
-                customers.put(new Customer(random.nextInt(10)));
+                customers.put(new Customer(random.nextInt(Constants.MAX_SERVED_TIME)));
                 customersCount++;
                 waitFlag();
                 System.out.println("Customers size: " + customers.size());
@@ -37,7 +37,7 @@ public class CustomerGenerator extends Thread {
     }
 
     private int getRandom() {
-        int randValue = random.nextInt(3);
+        int randValue = random.nextInt(Constants.MAX_GENERIC_TIME);
         if (randValue == 0)
             return 1;
         return randValue;
