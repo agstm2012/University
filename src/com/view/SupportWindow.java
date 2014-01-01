@@ -1,11 +1,19 @@
 package com.view;
 
+import com.controller.TellerManager;
+import com.interfaces.Constants;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-//Todo окно настроек добавить переключение и все константы.
 public class SupportWindow extends JFrame{
-    public SupportWindow() {
+    private TextField textCustomersMaxSize;
+    private TellerManager tellerManager;
+
+    public SupportWindow(TellerManager tellerManager) {
+        this.tellerManager = tellerManager;
         initUI();
 
         setTitle("SMO support");
@@ -26,6 +34,19 @@ public class SupportWindow extends JFrame{
 
         setLeftContentPanel(panel);
         setCenterContentPanel(panel);
+        setBottomContentPanel(panel);
+    }
+
+    private void setBottomContentPanel(JPanel panel) {
+        JPanel bottomPanel = new JPanel();
+
+        JButton saveButton = new JButton("Save configuration");
+        saveButton.setBounds(10, 10, 80, 30);
+        saveButton.addActionListener(new SaveAction());
+        saveButton.setToolTipText("Save configuration");
+        bottomPanel.add(saveButton);
+
+        panel.add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private void setCenterContentPanel(JPanel panel) {
@@ -33,10 +54,10 @@ public class SupportWindow extends JFrame{
         centerPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         centerPanel.setLayout(new GridLayout(10, 1, 5, 5));
 
-        TextField textCustomersMaxSize = createTextField();
-        TextField textTellersMaxSize = createTextField();
-        TextField textMaxGenericTime = createTextField();
-        TextField textMaxServedTime = createTextField();
+        TextField textCustomersMaxSize = createTextField("100");
+        TextField textTellersMaxSize = createTextField("2");
+        TextField textMaxGenericTime = createTextField("3");
+        TextField textMaxServedTime = createTextField("10");
         centerPanel.add(textCustomersMaxSize);
         centerPanel.add(textTellersMaxSize);
         centerPanel.add(textMaxGenericTime);
@@ -45,11 +66,12 @@ public class SupportWindow extends JFrame{
         panel.add(centerPanel, BorderLayout.CENTER);
     }
 
-    private TextField createTextField() {
+    private TextField createTextField(String data) {
         TextField textField = new TextField();
         textField.setSize(140, 16);
         Font font = new Font("Verdana", Font.BOLD, 12);
         textField.setFont(font);
+        textField.setText(data);
         return textField;
     }
 
@@ -76,5 +98,13 @@ public class SupportWindow extends JFrame{
         Font font = new Font("Verdana", Font.BOLD, 12);
         label.setFont(font);
         return label;
+    }
+
+    class SaveAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            dispose();
+        }
     }
 }

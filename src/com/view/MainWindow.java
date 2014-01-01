@@ -182,7 +182,7 @@ public class MainWindow extends JFrame {
             SwingUtilities.invokeLater(new Runnable() {   //this is use for concurrency-safe mode
                 @Override
                 public void run() {
-                    SupportWindow supportWindow = new SupportWindow();
+                    SupportWindow supportWindow = new SupportWindow(tellerManager);
                     supportWindow.setVisible(true);
                 }
             });
