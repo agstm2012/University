@@ -20,9 +20,8 @@ public class TellerManager extends Thread {
     private CustomerGenerator generator;
     private boolean suspendFlag;
     //Todo прикрутить окно настройки к форме и менюху с настройками, возможно читать из xml - ника ширину окна высоту
-    //Todo просчитывать количество клиентов обслужанных каждым кассиров
-    //Todo Просчитывать среднее время обслуживания у каждого кассира
-    //Todo просчитывать прочие атрибуты(возьми из лекций и тестовых проектов)
+    //Todo разобраться как просчитывать атрибуты и какие атрибуты нужны
+    //Todo 1 секунда у меня равн, одной минуте
     //Todo доделать SWING
 
     public TellerManager(Executor exec, CustomersList customers, CustomerGenerator generator) {
@@ -90,7 +89,7 @@ public class TellerManager extends Thread {
         generator.setTime(0);
         generator.setCustomersCount(0);
         for (Teller teller : workingTellers)
-            teller.interrupt(); //Todo здесь надо завершить поток теллера.
+            teller.interrupt();
         workingTellers = new PriorityQueue<Teller>();
         tellersDoingOtherThings = new LinkedList<Teller>();
         addTeller();

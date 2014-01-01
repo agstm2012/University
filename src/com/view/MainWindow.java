@@ -46,12 +46,18 @@ public class MainWindow extends JFrame {
         JMenu file = new JMenu("File");
         file.setMnemonic(KeyEvent.VK_F);
 
-        JMenuItem eMenuItem = new JMenuItem("Exit");
-        eMenuItem.setMnemonic(KeyEvent.VK_E);
-        eMenuItem.setToolTipText("Exit application");
-        eMenuItem.addActionListener(new ExitAction());
-
-        file.add(eMenuItem);
+        JMenuItem jMenuItemSupport = new JMenuItem("Support");
+        jMenuItemSupport.setMnemonic(KeyEvent.VK_S);
+        jMenuItemSupport.setToolTipText("Support application");
+        jMenuItemSupport.addActionListener(new SupportAction());
+        file.add(jMenuItemSupport);
+        
+        JMenuItem eMenuItemExit = new JMenuItem("Exit");
+        eMenuItemExit.setMnemonic(KeyEvent.VK_E);
+        eMenuItemExit.setToolTipText("Exit application");
+        eMenuItemExit.addActionListener(new ExitAction());
+        file.add(eMenuItemExit);
+                
         menu.add(file);
     }
 
@@ -167,6 +173,19 @@ public class MainWindow extends JFrame {
             tellerManager.reloadBlock();
             resumeButton.setEnabled(false);
             suspendButton.setEnabled(true);
+        }
+    }
+
+    class SupportAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(new Runnable() {   //this is use for concurrency-safe mode
+                @Override
+                public void run() {
+                    SupportWindow supportWindow = new SupportWindow();
+                    supportWindow.setVisible(true);
+                }
+            });
         }
     }
 }
