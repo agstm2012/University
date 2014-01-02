@@ -70,7 +70,7 @@ public class MainWindow extends JFrame {
     }
 
     private void setMainPartPanel(JPanel panel) {
-        String[] columnNames = {"h", "p", "p0", "p", "p_otk", "p_obs", "n_z", "n_sr", "K_z", "A", "t_pr", "l_obs"};
+        String[] columnNames = {"λ", "t", "μ", "ρ", "ρ0", "tпр", "__BIG_BLOCK__", "ρотк", "Q", "nз", "nпр", "K3", "A", "tпр", "Lобс"};
 
         model = new DefaultTableModel(null, columnNames);
 
