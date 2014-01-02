@@ -20,7 +20,37 @@ public class Calculator {
         float tmp = number * pow;
         return (float) (int) ((tmp - (int) tmp) >= 0.5f ? tmp + 1 : tmp) / pow;
     }
+    //λ
+    public synchronized double getIntensity() {
+        return (double) (generator.getTime() / 1000) / generator.getCustomersCount();
+    }
+    //t
+    public synchronized double getMiddleWorkTime() {
+        return (double) (generator.getServedTime() / generator.getCustomersCount());
+    }
+    //μ
+    public synchronized double getIntensityServed() {
+        return (double) 1 / getMiddleWorkTime();
+    }
+    //ρ
+    public synchronized double getIntensityWork() {
+        return (double) getIntensity() * getMiddleWorkTime();
+    }
+    //ρ0
+    public synchronized double getIntensityFree() {
+        double sum = 0;
+        for(int i = 1; i <= Constants.TELLERS_MAX_SIZE; i++) {
+            sum = sum + Math.pow(getIntensityWork(), i) / fact(i);
+        }
+        sum = sum + 1;
+        return (double) 1 / sum;
+    }
+    //tпр
+    public synchronized double getTimeFree() {
+        return (double) 60 * getIntensityFree();
+    }
 
+    /*
     public synchronized static float calculateProbabilityOfFailure() {
         float sum = 0;
         float probabilityOfFailure;
@@ -77,5 +107,5 @@ public class Calculator {
     public synchronized static double calculateIntensity() {
         //return (double) ((generator.getTime() / 1000) / generator.getCustomersCount()) * 3600;
         return (double) (generator.getTime() / 1000) / generator.getCustomersCount() * 60;
-    }
+    } */
 }

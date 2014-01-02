@@ -10,10 +10,16 @@ import java.awt.event.ActionListener;
 
 public class SupportWindow extends JFrame{
     private TextField textCustomersMaxSize;
+    private TextField textTellersMaxSize;
+    private TextField textMaxGenericTime;
+    private TextField textMaxServedTime;
+
+
     private TellerManager tellerManager;
 
     public SupportWindow(TellerManager tellerManager) {
         this.tellerManager = tellerManager;
+        tellerManager.suspendBlock();
         initUI();
 
         setTitle("SMO support");
@@ -54,10 +60,10 @@ public class SupportWindow extends JFrame{
         centerPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         centerPanel.setLayout(new GridLayout(10, 1, 5, 5));
 
-        TextField textCustomersMaxSize = createTextField("100");
-        TextField textTellersMaxSize = createTextField("2");
-        TextField textMaxGenericTime = createTextField("3");
-        TextField textMaxServedTime = createTextField("10");
+        textCustomersMaxSize = createTextField("100");
+        textTellersMaxSize = createTextField("2");
+        textMaxGenericTime = createTextField("3");
+        textMaxServedTime = createTextField("10");
         centerPanel.add(textCustomersMaxSize);
         centerPanel.add(textTellersMaxSize);
         centerPanel.add(textMaxGenericTime);
@@ -103,7 +109,11 @@ public class SupportWindow extends JFrame{
     class SaveAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            Constants.TELLERS_MAX_SIZE = Integer.valueOf(textTellersMaxSize.getText());
+            Constants.CUSTOMERS_MAX_SIZE = Integer.valueOf(textCustomersMaxSize.getText());
+            Constants.MAX_GENERIC_TIME = Integer.valueOf(textMaxGenericTime.getText());
+            Constants.MAX_SERVED_TIME = Integer.valueOf(textMaxServedTime.getText());
+            tellerManager.reloadBlock();
             dispose();
         }
     }

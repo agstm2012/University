@@ -14,7 +14,8 @@ public class CustomerGenerator extends Thread {
     private boolean suspendFlag;
     private long time;
     private int customersCount;
-
+    private long servedTime;
+    //TODO прикрутить ОТКАЗ т.е. процент отказа от всех клиентов он должен быть маленький пока без него α = 0.04
     public CustomerGenerator(CustomersList customers) {
         this.customers = customers;
         suspendFlag = false;
@@ -25,8 +26,10 @@ public class CustomerGenerator extends Thread {
         try {
             while (!Thread.interrupted() && !suspendFlag) {
                 TimeUnit.SECONDS.sleep(getRandom());
-                customers.put(new Customer(random.nextInt(Constants.MAX_SERVED_TIME)));
+                int workTime = random.nextInt(Constants.MAX_SERVED_TIME);
+                customers.put(new Customer(workTime));
                 customersCount++;
+                servedTime = servedTime + workTime;
                 waitFlag();
                 System.out.println("Customers size: " + customers.size());
             }
@@ -97,5 +100,13 @@ public class CustomerGenerator extends Thread {
 
     public void setCustomersCount(int customersCount) {
         this.customersCount = customersCount;
+    }
+
+    public long getServedTime() {
+        return servedTime;
+    }
+
+    public void setServedTime(long servedTime) {
+        this.servedTime = servedTime;
     }
 }

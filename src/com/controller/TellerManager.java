@@ -21,7 +21,7 @@ public class TellerManager extends Thread {
     private boolean suspendFlag;
     //Todo прикрутить окно настройки к форме и менюху с настройками, возможно читать из xml - ника ширину окна высоту
     //Todo разобраться как просчитывать атрибуты и какие атрибуты нужны
-    //Todo 1 секунда у меня равн, одной минуте
+    //Todo 1 минунда у меня равн, одной минуте
     //Todo доделать SWING
 
     public TellerManager(Executor exec, CustomersList customers, CustomerGenerator generator) {
@@ -79,7 +79,7 @@ public class TellerManager extends Thread {
         suspendBlock();
         //Todo заменить это на что то другое, а то подвисает GUI
 //        try {
-//            System.out.println("Идет перезагрузка. Подождите 10 секунд");
+//            System.out.println("Идет перезагрузка. Подождите 10 минунд");
 //            TimeUnit.SECONDS.sleep(10);
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
@@ -88,11 +88,14 @@ public class TellerManager extends Thread {
         generator.setCustomers(customers);
         generator.setTime(0);
         generator.setCustomersCount(0);
+        generator.setServedTime(0);
         for (Teller teller : workingTellers)
             teller.interrupt();
         workingTellers = new PriorityQueue<Teller>();
         tellersDoingOtherThings = new LinkedList<Teller>();
-        addTeller();
+        for(int i = 1; i <= Constants.TELLERS_MAX_SIZE; i++) {
+            addTeller();
+        }
         resumeBlock();
     }
 
@@ -107,33 +110,33 @@ public class TellerManager extends Thread {
     }
 
     private void printCalculation() {
-        MainWindow.printOutputText("Интенсивность потока h " + Calculator.calculateIntensity() + " чел./сек.");
-        MainWindow.printOutputText("Интенсивность нагрузки p " + Calculator.calculateIntensityLoad() + " на каждого кассира");
-        MainWindow.printOutputText("Вероятность того что канал не занят p0 " + Calculator.calculateProbabilityOfFailure());
-        for (int i = 1; i <= Constants.TELLERS_MAX_SIZE; i++) {
-            MainWindow.printOutputText("Вероятность того, что обслуживанием занят p" + i + " канал: " +
-                    Calculator.calculateProbabilityByChanel(i));
-        }
-        MainWindow.printOutputText("Доля заявок, получивших отказ p_otk " + Calculator.calculateCustomerProbabilityOfFailure());
-        MainWindow.printOutputText("Относительная пропускная способность p_obs " + Calculator.calculateCustomerServedOfFailure());
-        MainWindow.printOutputText("Среднее число каналов, занятых обслуживанием n_z " + Calculator.middleCountChanelServed());
-        MainWindow.printOutputText("Среднее число простаивающих каналов n_sr " + Calculator.middleCountChanelWait());
-        MainWindow.printOutputText("Коэффициент занятости каналов обслуживанием K_z " + Calculator.kidServedChannels());
-        MainWindow.printOutputText("Абсолютная пропускная способность A " + Calculator.absolutionProbability());
-        MainWindow.printOutputText("Среднее время простоя СМО t_pr " + Calculator.middleTimeWaitSMO());
-        MainWindow.printOutputText("Среднее число обслуживаемых заявок l_obs " + Calculator.middleCountServedCustomer());
-
-        createDataSendTable();
+//        MainWindow.printOutputText("Интенсивность потока h " + Calculator.calculateIntensity() + " чел./мин.");
+//        MainWindow.printOutputText("Интенсивность нагрузки p " + Calculator.calculateIntensityLoad() + " на каждого кассира");
+//        MainWindow.printOutputText("Вероятность того что канал не занят p0 " + Calculator.calculateProbabilityOfFailure());
+//        for (int i = 1; i <= Constants.TELLERS_MAX_SIZE; i++) {
+//            MainWindow.printOutputText("Вероятность того, что обслуживанием занят p" + i + " канал: " +
+//                    Calculator.calculateProbabilityByChanel(i));
+//        }
+//        MainWindow.printOutputText("Доля заявок, получивших отказ p_otk " + Calculator.calculateCustomerProbabilityOfFailure());
+//        MainWindow.printOutputText("Относительная пропускная способность p_obs " + Calculator.calculateCustomerServedOfFailure());
+//        MainWindow.printOutputText("Среднее число каналов, занятых обслуживанием n_z " + Calculator.middleCountChanelServed());
+//        MainWindow.printOutputText("Среднее число простаивающих каналов n_sr " + Calculator.middleCountChanelWait());
+//        MainWindow.printOutputText("Коэффициент занятости каналов обслуживанием K_z " + Calculator.kidServedChannels());
+//        MainWindow.printOutputText("Абсолютная пропускная способность A " + Calculator.absolutionProbability());
+//        MainWindow.printOutputText("Среднее время простоя СМО t_pr " + Calculator.middleTimeWaitSMO());
+//        MainWindow.printOutputText("Среднее число обслуживаемых заявок l_obs " + Calculator.middleCountServedCustomer());
+//
+//        createDataSendTable();
     }
 
-    private void createDataSendTable() {
-        String[] data = new String[]{str(Calculator.calculateIntensity()), str(Calculator.calculateIntensityLoad()),
-                str(Calculator.calculateProbabilityOfFailure()), "ДЛЯ КАЖДОГО", str(Calculator.calculateCustomerProbabilityOfFailure()),
-                str(Calculator.calculateCustomerServedOfFailure()), str(Calculator.middleCountChanelServed()),
-                str(Calculator.middleCountChanelWait()), str(Calculator.kidServedChannels()), str(Calculator.absolutionProbability()),
-                str(Calculator.middleTimeWaitSMO()), str(Calculator.middleCountServedCustomer())};
-        MainWindow.addTableRow(data);
-    }
+//    private void createDataSendTable() {
+//        String[] data = new String[]{str(Calculator.calculateIntensity()), str(Calculator.calculateIntensityLoad()),
+//                str(Calculator.calculateProbabilityOfFailure()), "ДЛЯ КАЖДОГО", str(Calculator.calculateCustomerProbabilityOfFailure()),
+//                str(Calculator.calculateCustomerServedOfFailure()), str(Calculator.middleCountChanelServed()),
+//                str(Calculator.middleCountChanelWait()), str(Calculator.kidServedChannels()), str(Calculator.absolutionProbability()),
+//                str(Calculator.middleTimeWaitSMO()), str(Calculator.middleCountServedCustomer())};
+//        MainWindow.addTableRow(data);
+//    }
 
     private String str(float value) {
         return String.valueOf(value);
