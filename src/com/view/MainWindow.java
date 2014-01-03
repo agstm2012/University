@@ -24,7 +24,7 @@ public class MainWindow extends JFrame {
         initUI();
 
         setTitle("SMO Project");
-        setSize(840, 480);
+        setSize(1240, 480);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -70,7 +70,7 @@ public class MainWindow extends JFrame {
     }
 
     private void setMainPartPanel(JPanel panel) {
-        String[] columnNames = {"λ", "t", "μ", "ρ", "ρ0", "tпр", "__BIG_BLOCK__", "ρотк", "Q", "nз", "nпр", "K3", "A", "tпр", "Lобс"};
+        String[] columnNames = {"λ", "t", "μ", "ρ", "ρ0", "tпр", "ρ для каждой кассы", "ρотк", "Q", "nз", "nпр", "K3", "A", "tпр", "Lобс"};
 
         model = new DefaultTableModel(null, columnNames);
 
@@ -139,6 +139,8 @@ public class MainWindow extends JFrame {
         model.addRow(data);
         model.fireTableDataChanged();
     }
+
+
 
     class ExitAction implements ActionListener {
         @Override

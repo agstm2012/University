@@ -100,46 +100,50 @@ public class TellerManager extends Thread {
     }
 
     public void printBlock() {
+        /*
         for (Customer customer : customers) {
             MainWindow.printOutputText(customer.toString());
         }
         for (Teller teller : workingTellers) {
             MainWindow.printOutputText(teller.toString());
-        }
+        }*/
         printCalculation();
     }
 
     private void printCalculation() {
-//        MainWindow.printOutputText("Интенсивность потока h " + Calculator.calculateIntensity() + " чел./мин.");
-//        MainWindow.printOutputText("Интенсивность нагрузки p " + Calculator.calculateIntensityLoad() + " на каждого кассира");
-//        MainWindow.printOutputText("Вероятность того что канал не занят p0 " + Calculator.calculateProbabilityOfFailure());
-//        for (int i = 1; i <= Constants.TELLERS_MAX_SIZE; i++) {
-//            MainWindow.printOutputText("Вероятность того, что обслуживанием занят p" + i + " канал: " +
-//                    Calculator.calculateProbabilityByChanel(i));
-//        }
-//        MainWindow.printOutputText("Доля заявок, получивших отказ p_otk " + Calculator.calculateCustomerProbabilityOfFailure());
-//        MainWindow.printOutputText("Относительная пропускная способность p_obs " + Calculator.calculateCustomerServedOfFailure());
-//        MainWindow.printOutputText("Среднее число каналов, занятых обслуживанием n_z " + Calculator.middleCountChanelServed());
-//        MainWindow.printOutputText("Среднее число простаивающих каналов n_sr " + Calculator.middleCountChanelWait());
-//        MainWindow.printOutputText("Коэффициент занятости каналов обслуживанием K_z " + Calculator.kidServedChannels());
-//        MainWindow.printOutputText("Абсолютная пропускная способность A " + Calculator.absolutionProbability());
-//        MainWindow.printOutputText("Среднее время простоя СМО t_pr " + Calculator.middleTimeWaitSMO());
-//        MainWindow.printOutputText("Среднее число обслуживаемых заявок l_obs " + Calculator.middleCountServedCustomer());
-//
-//        createDataSendTable();
+        MainWindow.printOutputText("Интенсивность потока λ " + Calculator.getIntensity() + " чел./мин.");
+        MainWindow.printOutputText("Среднее время обработки заявки составляет t " + Calculator.getMiddleWorkTime());
+        MainWindow.printOutputText("Интенсивность потока обслуживания μ " + Calculator.getIntensityServed());
+        MainWindow.printOutputText("Интенсивность нагрузки ρ " + Calculator.getIntensityWork());
+        MainWindow.printOutputText("Вероятность, что канал свободен (доля времени простоя каналов) ρ0 " + Calculator.getIntensityFree());
+        MainWindow.printOutputText("Время простоя равно канала tпр_к " + Calculator.getTimeFree());
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Вероятность того что обслуживанием заняты:\n");
+        for (int i = 1; i <= Constants.TELLERS_MAX_SIZE; i++) {
+            sb.append("ρ").append(i).append(" канал ").append(Calculator.getTimeFreeTeller(i)).append("\n");
+        }
+        MainWindow.printOutputText(sb.toString());
+
+        MainWindow.printOutputText("Доля заявок, получивших отказ ρотк " + Calculator.getIntensityFailed());
+        MainWindow.printOutputText("Относительная пропускная способность Q " + Calculator.getIntensityQuality());
+        MainWindow.printOutputText("Среднее число занятых линий связи nз " + Calculator.getTellersNotifyLine());
+        MainWindow.printOutputText("Среднее число простаивающих каналов nпр " + Calculator.getTellersWaitLine());
+        MainWindow.printOutputText("Коэффициент занятости каналов обслуживанием K3 " + Calculator.kpdWaitLine());
+        MainWindow.printOutputText("Абсолютная пропускная способность A " + Calculator.absolute());
+        MainWindow.printOutputText("Среднее время простоя СМО tпр " + Calculator.getTimeWaitSMO());
+        MainWindow.printOutputText("Среднее число обслуживаемых заявок Lобс " + Calculator.getMiddleCountServedCustomer());
+
+        createDataSendTable(sb.toString());
     }
 
-//    private void createDataSendTable() {
-//        String[] data = new String[]{str(Calculator.calculateIntensity()), str(Calculator.calculateIntensityLoad()),
-//                str(Calculator.calculateProbabilityOfFailure()), "ДЛЯ КАЖДОГО", str(Calculator.calculateCustomerProbabilityOfFailure()),
-//                str(Calculator.calculateCustomerServedOfFailure()), str(Calculator.middleCountChanelServed()),
-//                str(Calculator.middleCountChanelWait()), str(Calculator.kidServedChannels()), str(Calculator.absolutionProbability()),
-//                str(Calculator.middleTimeWaitSMO()), str(Calculator.middleCountServedCustomer())};
-//        MainWindow.addTableRow(data);
-//    }
-
-    private String str(float value) {
-        return String.valueOf(value);
+    private void createDataSendTable(String sbStr) {
+        String[] data = new String[]{str(Calculator.getIntensity()), str(Calculator.getMiddleWorkTime()),
+                str(Calculator.getIntensityServed()), str(Calculator.getIntensityWork()), str(Calculator.getIntensityFree()),
+                str(Calculator.getTimeFree()), sbStr,str(Calculator.getIntensityFailed()), str(Calculator.getIntensityQuality()),
+                str(Calculator.getTellersNotifyLine()), str(Calculator.getTellersWaitLine()), str(Calculator.kpdWaitLine()),
+                str(Calculator.absolute()), str(Calculator.getTimeWaitSMO()), str(Calculator.getMiddleCountServedCustomer())};
+        MainWindow.addTableRow(data);
     }
 
     private String str(double value) {

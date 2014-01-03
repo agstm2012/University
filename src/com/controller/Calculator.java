@@ -22,27 +22,27 @@ public class Calculator {
     }
 
     //λ
-    public synchronized double getIntensity() {
+    public static synchronized double getIntensity() {
         return (double) (generator.getTime() / 1000) / generator.getCustomersCount();
     }
 
     //t
-    public synchronized double getMiddleWorkTime() {
+    public static synchronized double getMiddleWorkTime() {
         return (double) (generator.getServedTime() / generator.getCustomersCount());
     }
 
     //μ
-    public synchronized double getIntensityServed() {
+    public static synchronized double getIntensityServed() {
         return (double) 1 / getMiddleWorkTime();
     }
 
     //ρ
-    public synchronized double getIntensityWork() {
+    public static synchronized double getIntensityWork() {
         return (double) getIntensity() * getMiddleWorkTime();
     }
 
     //ρ0
-    public synchronized double getIntensityFree() {
+    public static synchronized double getIntensityFree() {
         double sum = 0;
         for (int i = 1; i <= Constants.TELLERS_MAX_SIZE; i++) {
             sum = sum + Math.pow(getIntensityWork(), i) / fact(i);
@@ -52,47 +52,46 @@ public class Calculator {
     }
 
     //tпр
-    public synchronized double getTimeFree() {
+    public static synchronized double getTimeFree() {
         return (double) 60 * getIntensityFree();
     }
 
     //ρ для каждой кассы
-    public synchronized double getTimeFreeTeller(int number) {
-
+    public static synchronized double getTimeFreeTeller(int number) {
         return (double) (Math.pow(getIntensityWork(), number) / fact(number)) * getIntensityFree();
     }
 
     //ρотк p(pow)n/n! * p0
-    public synchronized double getIntensityFailed() {
+    public static synchronized double getIntensityFailed() {
         return (double) (Math.pow(getIntensityWork(), Constants.TELLERS_MAX_SIZE) / fact(Constants.TELLERS_MAX_SIZE) *
                 getIntensityFree());  //* 100 процент не обслужанных
     }
     //Относительная пропускная способность: Q = pобс
-    public synchronized double getIntensityQuality() {
+    public static synchronized double getIntensityQuality() {
         return (double) 1 - getIntensityFailed();   // процент обслужанных
     }
     //Среднее число занятых линий связи nз = p * pобс
-    public synchronized double getTellersNotifyLine() {
+    public static synchronized double getTellersNotifyLine() {
         return (double) getIntensityWork() * getIntensityQuality();
     }
     //Среднее число простаивающих каналов.nпр SIZE - nз
-    public synchronized double getTellersWaitLine() {
+    public static synchronized double getTellersWaitLine() {
         return (double) Constants.TELLERS_MAX_SIZE - getTellersNotifyLine();
     }
     //Коэффициент занятости каналов обслуживанием.K3
-    public synchronized double kpdWaitLine() {
+    public static synchronized double kpdWaitLine() {
         return (double) getTellersWaitLine() / Constants.TELLERS_MAX_SIZE;    //* 10 и будет процент
     }
     //Абсолютная пропускная способность. A
-    public synchronized double absolute() {
+    public static synchronized double absolute() {
         return (double) getIntensityQuality() * getIntensity();
     }
     //Среднее время простоя СМО. tпр = pотк • tобс = 0.0425 • 3.5 = 0.15 мин.
-    public synchronized double getTimeWaitSMO() {
+    public static synchronized double getTimeWaitSMO() {
         return (double) getIntensityFailed() * getMiddleWorkTime();
     }
     //12. Среднее число обслуживаемых заявок. Lобс = ρ • Q = 2.1 • 0.96 = 2.01 ед.
-    public synchronized double getMiddleCountServedCustomer() {
+    public static synchronized double getMiddleCountServedCustomer() {
         return (double) getIntensityWork() * getIntensityQuality();
     }
 
