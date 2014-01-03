@@ -15,6 +15,7 @@ public class CustomerGenerator extends Thread {
     private long time;
     private int customersCount;
     private long servedTime;
+    private long saveTime;
     //TODO прикрутить ОТКАЗ т.е. процент отказа от всех клиентов он должен быть маленький пока без него α = 0.04
     public CustomerGenerator(CustomersList customers) {
         this.customers = customers;
@@ -57,12 +58,14 @@ public class CustomerGenerator extends Thread {
     public synchronized void suspendGenerator() {
         suspendFlag = true;
         time += System.currentTimeMillis();
+        saveTime = time;
         System.out.println("CustomerGenerator suspend");
     }
 
     public synchronized void resumeGenerator() {
         suspendFlag = false;
         notifyAll();
+        time = -System.currentTimeMillis() + saveTime;
         System.out.println("CustomerGenerator resume");
     }
 
