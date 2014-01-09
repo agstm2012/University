@@ -20,7 +20,7 @@ public class App {
         NameGenerator nameGenerator = new NameGenerator();
 
         CustomersList customers = new CustomersList(Constants.CUSTOMERS_MAX_SIZE);
-        CustomerGenerator generator = new CustomerGenerator(customers);
+        final CustomerGenerator generator = new CustomerGenerator(customers);
         //init calculator
         Calculator calculator = new Calculator(generator);
 
@@ -33,7 +33,7 @@ public class App {
         SwingUtilities.invokeLater(new Runnable() {   //this is use for concurrency-safe mode
             @Override
             public void run() {
-                MainWindow window = new MainWindow(tellerManager);
+                MainWindow window = new MainWindow(tellerManager, generator);
                 window.setVisible(true);
             }
         });

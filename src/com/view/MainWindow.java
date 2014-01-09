@@ -1,5 +1,6 @@
 package com.view;
 
+import com.controller.CustomerGenerator;
 import com.controller.TellerManager;
 import com.xeiam.xchart.*;
 
@@ -22,9 +23,11 @@ public class MainWindow extends JFrame {
     JButton resumeButton;
 
     public TellerManager tellerManager;
+    public CustomerGenerator generator;
 
-    public MainWindow(TellerManager tellerManager) {
+    public MainWindow(TellerManager tellerManager, CustomerGenerator generator) {
         this.tellerManager = tellerManager;
+        this.generator = generator;
         initUI();
 
         setTitle("SMO Project");
@@ -207,7 +210,7 @@ public class MainWindow extends JFrame {
             SwingUtilities.invokeLater(new Runnable() {   //this is use for concurrency-safe mode
                 @Override
                 public void run() {
-                    GraphicsWindow graphicsWindow = new GraphicsWindow(tellerManager);
+                    GraphicsWindow graphicsWindow = new GraphicsWindow(tellerManager, generator);
                     graphicsWindow.setVisible(true);
                 }
             });
