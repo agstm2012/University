@@ -1,7 +1,10 @@
 package com.view;
 
 import com.controller.TellerManager;
+import com.xeiam.xchart.*;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -9,6 +12,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class MainWindow extends JFrame {
@@ -45,6 +49,12 @@ public class MainWindow extends JFrame {
     private void setMenuContent(JMenuBar menu) {
         JMenu file = new JMenu("File");
         file.setMnemonic(KeyEvent.VK_F);
+
+        JMenuItem jMenuItemGraphics = new JMenuItem("Graphics");
+        jMenuItemGraphics.setMnemonic(KeyEvent.VK_G);
+        jMenuItemGraphics.setToolTipText("Graphics");
+        jMenuItemGraphics.addActionListener(new GraphicsAction());
+        file.add(jMenuItemGraphics);
 
         JMenuItem jMenuItemSupport = new JMenuItem("Support");
         jMenuItemSupport.setMnemonic(KeyEvent.VK_S);
@@ -186,6 +196,19 @@ public class MainWindow extends JFrame {
                 public void run() {
                     SupportWindow supportWindow = new SupportWindow(tellerManager);
                     supportWindow.setVisible(true);
+                }
+            });
+        }
+    }
+
+    class GraphicsAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(new Runnable() {   //this is use for concurrency-safe mode
+                @Override
+                public void run() {
+                    GraphicsWindow graphicsWindow = new GraphicsWindow(tellerManager);
+                    graphicsWindow.setVisible(true);
                 }
             });
         }
