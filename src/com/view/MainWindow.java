@@ -83,7 +83,7 @@ public class MainWindow extends JFrame {
     }
 
     private void setMainPartPanel(JPanel panel) {
-        String[] columnNames = {"λ", "t", "μ", "ρ", "ρ0", "tпр", "ρ для каждой кассы", "ρотк", "Q", "nз", "nпр", "K3", "A", "tпр", "Lобс"};
+        String[] columnNames = {"λ", "t", "μ", "ρ", "ρ0", "tпр", "ρ для каждой кассы", "ρотк", "Q", "nз", "nпр", "K3", "A", "tпр", "Lобс", "Время работы"};
 
         model = new DefaultTableModel(null, columnNames);
 
@@ -205,12 +205,24 @@ public class MainWindow extends JFrame {
     }
 
     class GraphicsAction implements ActionListener {
+
+        public GraphicsAction() {
+
+        }
         @Override
         public void actionPerformed(ActionEvent e) {
             SwingUtilities.invokeLater(new Runnable() {   //this is use for concurrency-safe mode
                 @Override
                 public void run() {
-                    GraphicsWindow graphicsWindow = new GraphicsWindow(tellerManager, generator);
+                    if(!resumeButton.isEnabled()) {
+                        tellerManager.suspendBlock();
+                        tellerManager.printBlock();
+                        suspendButton.setEnabled(false);
+                        resumeButton.setEnabled(true);
+                    } else {
+                        tellerManager.printBlock();
+                    }
+                    GraphicsWindow graphicsWindow = new GraphicsWindow(tellerManager, generator, resumeButton, suspendButton);
                     graphicsWindow.setVisible(true);
                 }
             });

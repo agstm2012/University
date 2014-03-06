@@ -13,11 +13,16 @@ public class GraphicsWindow extends JFrame{
     private TellerManager tellerManager;
     private static CustomerGenerator generator;
     private GraphicsPanel graphicsPanel;
+    private JPanel topPanel;
+    private static boolean onResume;
+    private JButton resumeButton;
+    private JButton suspendButton;
 
-    public GraphicsWindow(TellerManager tellerManager, CustomerGenerator generator) {
-        this.tellerManager = tellerManager;
+    public GraphicsWindow(TellerManager tellerManager, CustomerGenerator generator,JButton resumeButton, JButton suspendButton) {
+        this.resumeButton = resumeButton;
+        this.suspendButton = suspendButton;
         this.generator = generator;
-        tellerManager.suspendBlock();
+        this.tellerManager = tellerManager;
         initUI();
 
         setTitle("SMO generateGraphics");
@@ -46,12 +51,17 @@ public class GraphicsWindow extends JFrame{
     }
 
     private void setTopContentPanel(JPanel panel) {
-
+        topPanel = new JPanel();
+        topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        topPanel.setLayout(new GridLayout(5, 4, 5, 5));
     }
 
     public void dispose() {
         super.dispose();
+        //if(onResume)
         tellerManager.resumeBlock();
+        resumeButton.setEnabled(false);
+        suspendButton.setEnabled(true);
     }
 
     static class GraphicsPanel extends JPanel {
@@ -90,34 +100,28 @@ public class GraphicsWindow extends JFrame{
                 g.setPaintMode();
                 String text = "Таблица результатов пуста. Необходимо заполнить таблицу результатов чтобы построить график.";
                 g.drawString(text, x / 2 - ((text.length() / 4) * 15), y / 2);
+                onResume = true;
             } else {
-                double time = generator.getTime();
-                double[] time_arr = new double[6];
-                double time_part = time / 5;
-                time_arr[0] = 0;
-                double sum = 0;
-                for(int i = 1; i <= 5; i++) {
-                    sum = sum + time_part;
-                    time_arr[i] = sum;
+                onResume = false;
+                System.out.println("\n\n\n\n\n\n\n\n\n");
+                int size = MainWindow.model.getRowCount();
+                double time_arr[] = new double[size];
+                double data_arr[] = new double[size];
+                for(int i = 0; i < size; i++) {
+                    time_arr[i] = Double.valueOf(MainWindow.model.getValueAt(i, 7).toString());
+                    data_arr[i] = Double.valueOf(MainWindow.model.getValueAt(i, 15).toString());
                 }
-                /*
-                Chart chart = new Chart(780, 620);
-                Series series = chart.addSeries("Time", null, time_arr);
-                series.setMarker(SeriesMarker.CIRCLE);
-                Graphics2D lGraphics2D = (Graphics2D) g;
-                chart.paint(lGraphics2D); */
+                createChart(800, 640, data_arr, time_arr, g);
             }
             //http://xeiam.com/xchart_examplecode.jsp
-            /*
-            Chart chart = new Chart(800, 640);
-            Series series = chart.addSeries("y(x)", null, new double[] {0, 1});
-            series.setMarker(SeriesMarker.CIRCLE);
-            Graphics2D lGraphics2D = (Graphics2D) g;
-            chart.paint(lGraphics2D);    */
         }
 
-        public static void createChart() {
-
+        public static void createChart(int width, int height, double[] data_arr, double[] time_arr,Graphics g) {
+            Chart chart = new Chart(width, height);
+            Series series = chart.addSeries("Time", data_arr, time_arr);
+            series.setMarker(SeriesMarker.CIRCLE);
+            Graphics2D lGraphics2D = (Graphics2D) g;
+            chart.paint(lGraphics2D);
         }
     }
 }

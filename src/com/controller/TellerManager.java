@@ -134,6 +134,12 @@ public class TellerManager extends Thread {
         MainWindow.printOutputText("Среднее время простоя СМО tпр " + Calculator.getTimeWaitSMO());
         MainWindow.printOutputText("Среднее число обслуживаемых заявок Lобс " + Calculator.getMiddleCountServedCustomer());
 
+        //Todo добавить вывод времени работы, потом вытаскивать значения tableModel из окна.
+        MainWindow.printOutputText("Время работы tellerManager " + generator.getTime());
+
+        MainWindow.printOutputText("\n\n\n============================================================================");
+
+
         createDataSendTable(sb.toString());
     }
 
@@ -142,7 +148,7 @@ public class TellerManager extends Thread {
                 str(Calculator.getIntensityServed()), str(Calculator.getIntensityWork()), str(Calculator.getIntensityFree()),
                 str(Calculator.getTimeFree()), sbStr,str(Calculator.getIntensityFailed()), str(Calculator.getIntensityQuality()),
                 str(Calculator.getTellersNotifyLine()), str(Calculator.getTellersWaitLine()), str(Calculator.kpdWaitLine()),
-                str(Calculator.absolute()), str(Calculator.getTimeWaitSMO()), str(Calculator.getMiddleCountServedCustomer())};
+                str(Calculator.absolute()), str(Calculator.getTimeWaitSMO()), str(Calculator.getMiddleCountServedCustomer()), str(generator.getTime())};
         MainWindow.addTableRow(data);
     }
 
