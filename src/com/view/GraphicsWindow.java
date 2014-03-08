@@ -8,8 +8,12 @@ import com.xeiam.xchart.SeriesMarker;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
+import java.util.List;
 
-public class GraphicsWindow extends JFrame{
+public class GraphicsWindow extends JFrame implements ActionListener{
     private TellerManager tellerManager;
     private static CustomerGenerator generator;
     private GraphicsPanel graphicsPanel;
@@ -17,6 +21,8 @@ public class GraphicsWindow extends JFrame{
     private static boolean onResume;
     private JButton resumeButton;
     private JButton suspendButton;
+    private String[] сheckboxes;
+    private List<JCheckBox> boxList;
 
     public GraphicsWindow(TellerManager tellerManager, CustomerGenerator generator,JButton resumeButton, JButton suspendButton) {
         this.resumeButton = resumeButton;
@@ -52,8 +58,31 @@ public class GraphicsWindow extends JFrame{
 
     private void setTopContentPanel(JPanel panel) {
         topPanel = new JPanel();
-        topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        topPanel.setLayout(new GridLayout(5, 4, 5, 5));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        topPanel.setLayout(new GridLayout(4, 4, 4, 4));
+
+
+        сheckboxes = new String[]{
+            "λ", "t", "μ", "ρ", "ρ0", "tпр", "ρотк", "Q", "nз", "nпр", "K3", "A", "tпр", "Lобс"
+        };
+
+        boxList = new ArrayList<JCheckBox>();
+
+        for(int i = 0; i < сheckboxes.length; i++) {
+            JCheckBox checkbox = new JCheckBox(сheckboxes[i], true);
+            if(i == 0)
+                checkbox.setSelected(true);
+            else
+                checkbox.setSelected(false);
+            checkbox.setFocusable(false);
+            checkbox.addActionListener(this);
+            topPanel.add(checkbox);
+            boxList.add(checkbox);
+        }
+
+        topPanel.setSize(800, 100);
+
+        panel.add(topPanel, BorderLayout.SOUTH);
     }
 
     public void dispose() {
@@ -64,6 +93,22 @@ public class GraphicsWindow extends JFrame{
         suspendButton.setEnabled(true);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JCheckBox source = (JCheckBox) e.getSource();
+        boolean state = source.isSelected();
+        String name = source.getText();
+
+        if (state) {
+            for(int i = 0; i < boxList.size(); i++) {
+                if(!boxList.get(i).getText().equals(name))
+                    boxList.get(i).setSelected(false);
+            }
+        } else {
+            //this.setTitle("");
+        }
+    }
+
     static class GraphicsPanel extends JPanel {
         private int x;
         private int y;
@@ -71,28 +116,13 @@ public class GraphicsWindow extends JFrame{
         public GraphicsPanel() {
             setBorder(BorderFactory.createLineBorder(Color.black));
             this.x = 800;
-            this.y = 640;
+            this.y = 515;
         }
         public Dimension getPreferredSize() {
             return new Dimension(x, y);
         }
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-
-            /*double[] xData = new double[] { 1.0 };
-            double[] yData = new double[] { 2.0 };
-            Chart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);*/
-
-            /*
-            C точками
-            double[] yData = new double[] { 2.0 };
-            Chart chart = new Chart(500, 400);
-            chart.setChartTitle("Sample Chart");
-            chart.setXAxisTitle("X");
-            chart.setYAxisTitle("Y");
-            Series series = chart.addSeries("y(x)", null, yData);
-            series.setMarker(SeriesMarker.CIRCLE);
-            */
             int count = MainWindow.model.getRowCount();
             if(count == 0) {
                 g.setFont(new Font("Candara", Font.BOLD, 15));
@@ -111,7 +141,7 @@ public class GraphicsWindow extends JFrame{
                     time_arr[i] = Double.valueOf(MainWindow.model.getValueAt(i, 7).toString());
                     data_arr[i] = Double.valueOf(MainWindow.model.getValueAt(i, 15).toString());
                 }
-                createChart(800, 640, data_arr, time_arr, g);
+                createChart(800, 515, data_arr, time_arr, g);
             }
             //http://xeiam.com/xchart_examplecode.jsp
         }
