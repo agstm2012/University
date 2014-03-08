@@ -58,16 +58,15 @@ public class GraphicsWindow extends JFrame implements ActionListener{
 
     private void setTopContentPanel(JPanel panel) {
         topPanel = new JPanel();
-        topPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        topPanel.setLayout(new GridLayout(4, 4, 4, 4));
+        topPanel.setLayout(new BorderLayout());
 
-
+        JPanel checksPanel = new JPanel();
+        checksPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        checksPanel.setLayout(new GridLayout(4, 4, 4, 4));
         сheckboxes = new String[]{
             "λ", "t", "μ", "ρ", "ρ0", "tпр", "ρотк", "Q", "nз", "nпр", "K3", "A", "tпр", "Lобс"
         };
-
         boxList = new ArrayList<JCheckBox>();
-
         for(int i = 0; i < сheckboxes.length; i++) {
             JCheckBox checkbox = new JCheckBox(сheckboxes[i], true);
             if(i == 0)
@@ -76,11 +75,21 @@ public class GraphicsWindow extends JFrame implements ActionListener{
                 checkbox.setSelected(false);
             checkbox.setFocusable(false);
             checkbox.addActionListener(this);
-            topPanel.add(checkbox);
+            checksPanel.add(checkbox);
             boxList.add(checkbox);
         }
+        checksPanel.setSize(800, 87);
+
+
+        JPanel buttonPanel = new JPanel();
+        JButton button = new JButton("Create chart");
+        button.addActionListener(null);
+        buttonPanel.add(button);
+        buttonPanel.setSize(800, 13);
 
         topPanel.setSize(800, 100);
+        topPanel.add(checksPanel, BorderLayout.CENTER);
+        topPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         panel.add(topPanel, BorderLayout.SOUTH);
     }
@@ -152,6 +161,18 @@ public class GraphicsWindow extends JFrame implements ActionListener{
             series.setMarker(SeriesMarker.CIRCLE);
             Graphics2D lGraphics2D = (Graphics2D) g;
             chart.paint(lGraphics2D);
+        }
+    }
+
+    class CreateChartListener implements ActionListener {
+
+        public CreateChartListener() {
+
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
         }
     }
 }
