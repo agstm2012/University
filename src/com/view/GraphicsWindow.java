@@ -17,7 +17,7 @@ public class GraphicsWindow extends JFrame implements ActionListener{
     private TellerManager tellerManager;
     private static CustomerGenerator generator;
     private GraphicsPanel graphicsPanel;
-    private JPanel topPanel;
+    private JPanel topPanel, panel;
     private static boolean onResume;
     private JButton resumeButton;
     private JButton suspendButton;
@@ -38,7 +38,7 @@ public class GraphicsWindow extends JFrame implements ActionListener{
     }
 
     private void initUI() {
-        JPanel panel = new JPanel();
+        panel = new JPanel();
         getContentPane().add(panel);
 
         setPanelContent(panel);
@@ -53,6 +53,7 @@ public class GraphicsWindow extends JFrame implements ActionListener{
 
     private void setCenterContentPanel(JPanel panel) {
         graphicsPanel = new GraphicsPanel();
+        graphicsPanel.setVisible(false);
         panel.add(graphicsPanel, BorderLayout.SOUTH);
     }
 
@@ -83,7 +84,7 @@ public class GraphicsWindow extends JFrame implements ActionListener{
 
         JPanel buttonPanel = new JPanel();
         JButton button = new JButton("Create chart");
-        button.addActionListener(null);
+        button.addActionListener(new CreateChartListener());
         buttonPanel.add(button);
         buttonPanel.setSize(800, 13);
 
@@ -121,14 +122,51 @@ public class GraphicsWindow extends JFrame implements ActionListener{
     static class GraphicsPanel extends JPanel {
         private int x;
         private int y;
+        private String attr; //мы будем задавать этот атрибут потом по нему создавать paincomponent
 
         public GraphicsPanel() {
             setBorder(BorderFactory.createLineBorder(Color.black));
             this.x = 800;
             this.y = 515;
+            this.attr = String.valueOf(7);
         }
         public Dimension getPreferredSize() {
             return new Dimension(x, y);
+        }
+        public void setAttr(String attr) {
+            this.attr = attr;
+        }
+        private Integer createAttr(String attr) {
+            //"λ", "t", "μ", "ρ", "ρ0", "tпр", "ρотк", "Q", "nз", "nпр", "K3", "A", "tпр", "Lобс";
+            if(attr.equals("λ"))
+                return 0;
+            else if(attr.equals("t"))
+                return 1;
+            else if(attr.equals("μ"))
+                return 2;
+            else if(attr.equals("ρ"))
+                return 3;
+            else if(attr.equals("ρ0"))
+                return 4;
+            else if(attr.equals("tпр"))
+                return 5;
+            else if(attr.equals("ρотк"))
+                return 7;
+            else if(attr.equals("Q"))
+                return 8;
+            else if(attr.equals("nз"))
+                return 9;
+            else if(attr.equals("nпр"))
+                return 10;
+            else if(attr.equals("K3"))
+                return 11;
+            else if(attr.equals("A"))
+                return 12;
+            else if(attr.equals("tпр"))
+                return 13;
+            else if(attr.equals("Lобс"))
+                return 14;
+            return 7;
         }
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -144,20 +182,23 @@ public class GraphicsWindow extends JFrame implements ActionListener{
                 onResume = false;
                 System.out.println("\n\n\n\n\n\n\n\n\n");
                 int size = MainWindow.model.getRowCount();
+                int attr = createAttr(this.attr);
                 double time_arr[] = new double[size];
                 double data_arr[] = new double[size];
                 for(int i = 0; i < size; i++) {
-                    time_arr[i] = Double.valueOf(MainWindow.model.getValueAt(i, 7).toString());
+                    time_arr[i] = Double.valueOf(MainWindow.model.getValueAt(i, attr).toString());
                     data_arr[i] = Double.valueOf(MainWindow.model.getValueAt(i, 15).toString());
                 }
-                createChart(800, 515, data_arr, time_arr, g);
+                createChart(800, 515, data_arr, time_arr, g, this.attr);
             }
             //http://xeiam.com/xchart_examplecode.jsp
         }
 
-        public static void createChart(int width, int height, double[] data_arr, double[] time_arr,Graphics g) {
+        public static void createChart(int width, int height, double[] data_arr, double[] time_arr,Graphics g, String attr) {
             Chart chart = new Chart(width, height);
-            Series series = chart.addSeries("Time", data_arr, time_arr);
+            Series series = chart.addSeries(attr + "/Time work", data_arr, time_arr);
+            series.setLineColor(Color.RED);
+            series.setMarkerColor(Color.BLACK);
             series.setMarker(SeriesMarker.CIRCLE);
             Graphics2D lGraphics2D = (Graphics2D) g;
             chart.paint(lGraphics2D);
@@ -172,7 +213,15 @@ public class GraphicsWindow extends JFrame implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            graphicsPanel.setVisible(false);
+            for(int i = 0; i < boxList.size(); i++) {
+                if(boxList.get(i).isSelected())
+                    graphicsPanel.setAttr(boxList.get(i).getText());
+            }
+            graphicsPanel.repaint();
+            graphicsPanel.setVisible(true);
 
+            System.out.println(graphicsPanel.attr);
         }
     }
 }
